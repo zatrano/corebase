@@ -8,6 +8,15 @@ import (
 	"gorm.io/gorm"
 )
 
+type IBaseRepository[T any] interface {
+	GetAll() ([]T, error)
+	GetByID(id uint) (*T, error)
+	GetCount() (int64, error)
+	Create(ctx context.Context, entity *T) error
+	Update(ctx context.Context, id uint, data map[string]interface{}) error
+	Delete(ctx context.Context, id uint) error
+}
+
 type BaseRepository[T any] struct {
 	db *gorm.DB
 }
@@ -85,3 +94,5 @@ func (r *BaseRepository[T]) Delete(ctx context.Context, id uint) error {
 
 	return nil
 }
+
+var _ IBaseRepository[any] = (*BaseRepository[any])(nil)
